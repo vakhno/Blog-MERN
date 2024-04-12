@@ -6,3 +6,10 @@ export const createPostValidation = [
 	body('tags', 'Invalid format').optional().isString(),
 	body('image', 'Invalid format').optional().isString(),
 ];
+
+export const updatePostValidation = [
+	body('title', 'Title is required').isLength({ min: 5 }).isString(),
+	body('text', 'Text is required').isLength({ min: 10 }).isString(),
+	body('tags', 'Invalid format').optional().isString(),
+	body('image', 'Invalid format').optional().isString(),
+];

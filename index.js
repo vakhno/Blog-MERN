@@ -6,6 +6,7 @@ import profileRoutes from './routes/profile.routes.js';
 import postRoutes from './routes/post.routes.js';
 
 const app = express();
+
 const PORT = process.env.PORT || 4444;
 
 dotenv.config();
@@ -17,9 +18,11 @@ app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/post', postRoutes);
 
+app.use('/uploads', express.static('uploads'));
+
 app.listen(PORT, (error) => {
 	if (error) {
-		return console.log(err);
+		return console.log(error);
 	}
 	connectToMongoDB();
 });
