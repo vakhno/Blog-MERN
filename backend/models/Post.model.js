@@ -16,10 +16,12 @@ const PostSchema = new Schema(
 			ref: 'User',
 			required: true,
 		},
-		tags: {
-			type: Array,
-			default: [],
-		},
+		tags: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Tag',
+			},
+		],
 		image: {
 			type: String,
 			default: '',

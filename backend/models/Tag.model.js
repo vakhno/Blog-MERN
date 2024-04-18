@@ -6,6 +6,10 @@ const TagSchema = new Schema({
 		required: true,
 		unique: true,
 	},
+	popularity: {
+		type: Number,
+		required: true,
+	},
 });
 
 export default mongoose.model('Tag', TagSchema);

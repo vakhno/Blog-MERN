@@ -11,6 +11,7 @@ export const FullPost = () => {
 	const { id } = useParams();
 
 	useEffect(() => {
+		console.log('ID', id);
 		isLoading(true);
 		axios
 			.get(`/post/post/${id}`)
@@ -22,6 +23,7 @@ export const FullPost = () => {
 			})
 			.finally(() => isLoading(false));
 	}, []);
+	console.log('data', data);
 	return (
 		<>
 			{loading ? (
@@ -32,7 +34,7 @@ export const FullPost = () => {
 						id={data._id}
 						title={data.title}
 						imageUrl={data.image}
-						user={data.author}
+						author={data.author}
 						createdAt={data.createdAt}
 						viewsCount={data.viewsCount}
 						commentsCount={3}

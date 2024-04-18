@@ -6,18 +6,30 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
 	return data;
 });
 
-export const fetchTags = createAsyncThunk('posts/fetchTags', async () => {
-	const { data } = await axios.get();
+export const deletePost = createAsyncThunk('posts/deletePost', async (params) => {
+	const { id } = params;
+	await axios.delete(`/post/post/${id}`);
+	return { id };
+});
+
+export const addPost = createAsyncThunk('/posts/addPost', async (params) => {
+	const { fields, imageFile } = params;
+	let url = null;
+	if (imageFile) {
+		const { data } = await axios.post('/post/upload', imageFile);
+		url = data.url;
+	}
+	if (url) {
+		fields['image'] = url;
+	}
+	const { data: newPost } = await axios.post('/post/post', fields);
+	return { newPost };
 });
 
 const initialState = {
 	posts: {
 		items: [],
-		status: 'loading',
-	},
-	tags: {
-		items: [],
-		status: 'loading',
+		status: 'loaded',
 	},
 };
 
@@ -37,6 +49,18 @@ const postsSlice = createSlice({
 			state.posts.status = 'error';
 			state.posts.items = [];
 		},
+		[deletePost.pending]: () => {},
+		[deletePost.fulfilled]: (state, action) => {
+			const { id } = action.payload;
+			state.posts.items = state.posts.items.filter((post) => post._id !== id);
+		},
+		[deletePost.rejected]: () => {},
+		[addPost.pending]: () => {},
+		[addPost.fulfilled]: (state, action) => {
+			const { newPost } = action.payload;
+			state.posts.items = [...state.posts.items, newPost];
+		},
+		[addPost.rejected]: () => {},
 	},
 });
 

@@ -13,8 +13,7 @@ export const sendTags = async (req, res) => {
 			if (tags.length) {
 				console.log('Default tags already exist');
 			} else {
-				const defaultTagObjects = DefaultTags.map((tagName) => ({ name: tagName }));
-				await TagModel.insertMany(defaultTagObjects);
+				await TagModel.insertMany(DefaultTags);
 				res.status(200).json({ success: true });
 			}
 		}
@@ -29,6 +28,18 @@ export const getAllTags = async (req, res) => {
 		res.status(200).json({ tags: tags });
 	} catch (error) {
 		res.status(500).json({ message: 'Failure tags' });
+	}
+};
+
+export const getPopularTags = async (req, res) => {
+	try {
+		const popularTags = await TagModel.find({ popularity: { $gt: 0 } })
+			.sort({ popularity: -1 })
+			.limit(5);
+		console.log('BACK', popularTags);
+		res.status(200).json(popularTags);
+	} catch (error) {
+		res.status(500).json({ error: error });
 	}
 };
 

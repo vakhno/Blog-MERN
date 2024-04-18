@@ -8,8 +8,8 @@ export const signup = async (req, res) => {
 		const errors = validationResult(req);
 
 		if (!errors.isEmpty()) {
-			console.log('Failure signup!');
-			res.status(400).json({ success: false, error: errors.array() });
+			console.log('Invalid validation!', errors);
+			return res.status(400).json({ success: false, message: errors });
 		} else {
 			const userPassword = req.body.password;
 			const salt = await bcrypt.genSalt(10);
@@ -36,11 +36,14 @@ export const signup = async (req, res) => {
 			const { password, ...userData } = user._doc;
 
 			console.log('Success signup!');
-			res.status(200).json({ success: true, token: token, user: userData });
+			return res
+				.status(200)
+				.json({ success: true, token: token, user: userData, message: 'Success signup!' });
 		}
 	} catch (error) {
-		console.log(error);
-		res.status(500).json({ message: 'Failure signup!' });
+		console.log('Server error!');
+		console.log('Error: ', error);
+		return res.status(500).json({ success: false, message: 'Server error!', error });
 	}
 };
 
@@ -49,20 +52,20 @@ export const login = async (req, res) => {
 		const errors = validationResult(req);
 
 		if (!errors.isEmpty()) {
-			console.log('Failure login!');
-			res.status(400).json({ success: false, error: errors.array() });
+			console.log('Invalid validation!');
+			return res.status(400).json({ success: false, message: 'Invalid validation!' });
 		}
 
 		const user = await UserModel.findOne({ email: req.body.email });
 
 		if (!user) {
 			console.log('User is not found!');
-			res.status(400).json({ message: 'Failure login!' });
+			return res.status(400).json({ success: false, message: 'User is not found!' });
 		} else {
 			const isPasswordValid = await bcrypt.compare(req.body.password, user._doc.password);
 			if (!isPasswordValid) {
-				console.log('Failure login!');
-				res.status(404).json({ message: 'Failure login!' });
+				console.log('Incorrect data!');
+				return res.status(404).json({ success: false, message: 'Incorrect data!' });
 			} else {
 				const token = jwt.sign(
 					{
@@ -76,11 +79,24 @@ export const login = async (req, res) => {
 
 				const { password, ...userData } = user._doc;
 				console.log('Success login!');
-				res.status(200).json({ success: true, token: token, user: userData });
+				return res
+					.status(200)
+					.json({ success: true, token: token, user: userData, message: 'Success login!' });
 			}
 		}
 	} catch (error) {
-		console.log('Failure login!');
-		res.status(500).json({ message: 'Failure login!' });
+		console.log('Server error!');
+		console.log('Error: ', error);
+		return res.status(500).json({ success: false, message: 'Server error!', error });
+	}
+};
+
+export const logout = (req, res) => {
+	try {
+		res.status(200).json({ success: true });
+	} catch (error) {
+		console.log('Server error!');
+		console.log('Error: ', error);
+		return res.status(500).json({ success: false, message: 'Server error!', error });
 	}
 };

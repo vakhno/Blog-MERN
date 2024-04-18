@@ -59,6 +59,7 @@ export const getOnePost = (req, res) => {
 		{ $inc: { viewsCount: 1 } },
 		{ returnDocument: 'after' },
 	)
+		.populate('author')
 		.then((doc) => {
 			if (!doc) {
 				console.log('Failure get post');

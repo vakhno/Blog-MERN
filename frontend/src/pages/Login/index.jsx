@@ -7,9 +7,11 @@ import { useForm } from 'react-hook-form';
 import styles from './Login.module.scss';
 import { useDispatch } from 'react-redux';
 import { authLogin } from '../../redux/slices/auth';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const {
 		register,
 		handleSubmit,
@@ -24,7 +26,7 @@ export const Login = () => {
 	});
 
 	const onSubmit = (values) => {
-		dispatch(authLogin(values));
+		dispatch(authLogin({ values, navigate }));
 	};
 
 	return (

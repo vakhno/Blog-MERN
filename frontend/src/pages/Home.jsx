@@ -1,52 +1,70 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+// import TabPanel from '@mui/material/TabPanel';
+// import TabPanel from '@mui/lab/TabPanel';
 import Grid from '@mui/material/Grid';
 import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
-import { fetchPosts } from '../redux/slices/posts';
 
 export const Home = () => {
 	const dispatch = useDispatch();
+	const [selectedTab, setSelectedTab] = useState('1');
 	const { posts, tags } = useSelector((state) => state.posts);
 	const isPostsLoading = posts.status === 'loading';
 
-	useEffect(() => {
-		dispatch(fetchPosts());
-	}, []);
+	// useEffect(() => {
+	// 	dispatch(fetchPosts());
+	// }, []);
 
 	console.log('posts', posts);
-
+	const handleTabChange = (_, value) => {
+		setSelectedTab(value);
+	};
 	return (
 		<>
-			<Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
-				<Tab label="New" />
-				<Tab label="Popular" />
+			<Tabs
+				value={selectedTab}
+				onChange={handleTabChange}
+				style={{ marginBottom: 15 }}
+				aria-label="basic tabs example">
+				<Tab value="1" label="New" />
+				<Tab value="2" label="Popular" />
 			</Tabs>
 			<Grid container spacing={4}>
-				<Grid xs={8} item>
-					{(isPostsLoading ? [...Array(5)] : posts.items).map((obj, index) =>
-						isPostsLoading ? (
-							<Post key={index} isLoading={true} />
-						) : (
-							<Post
-								id={obj._id}
-								title={obj.title}
-								imageUrl="https://res.cloudinary.com/practicaldev/image/fetch/s--UnAfrEG8--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/icohm5g0axh9wjmu4oc3.png"
-								user={obj.author}
-								createdAt={obj.createdAt}
-								viewsCount={obj.viewsCount}
-								commentsCount={3}
-								tags={obj.tags}
-								isEditable
-							/>
-						),
-					)}
-				</Grid>
+				{selectedTab === '1' ? (
+					<Grid xs={8} item>
+						{(isPostsLoading ? [...Array(5)] : posts.items).map((obj, index) =>
+							isPostsLoading ? (
+								<Post key={index} isLoading={true} />
+							) : (
+								<Post
+									key={index}
+									id={obj._id}
+									title={obj.title}
+									imageUrl={obj.image}
+									user={obj.author}
+									createdAt={obj.createdAt}
+									viewsCount={obj.viewsCount}
+									commentsCount={3}
+									tags={obj.tags}
+									author={obj.author}
+									isEditable
+								/>
+							),
+						)}
+					</Grid>
+				) : selectedTab === '2' ? (
+					<Grid xs={8} item>
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis ad provident harum.
+						Enim vel quis blanditiis illum facilis veniam, dolores, cupiditate dolorem ipsa
+						reprehenderit repellendus velit consectetur quas. Ipsa, hic.
+					</Grid>
+				) : null}
 				<Grid xs={4} item>
-					<TagsBlock items={['react', 'typescript', 'заметки']} isLoading={false} />
+					<TagsBlock />
 					<CommentsBlock
 						items={[
 							{
