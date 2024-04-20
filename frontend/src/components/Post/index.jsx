@@ -29,10 +29,7 @@ export const Post = ({
 }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const userId = useSelector((state) => {
-		console.log('state', state);
-		return state.auth.isUserLoggedIn && state.auth.data._id;
-	});
+	const userId = useSelector((state) => state.auth.isUserLoggedIn && state.auth.data._id);
 
 	if (isLoading) {
 		return <PostSkeleton />;
@@ -48,10 +45,9 @@ export const Post = ({
 		}
 	};
 
-	console.log('AAAAAAAAAAAAU', author, userId, imageUrl);
 	return (
 		<div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
-			{userId === author._id && (
+			{`${userId}` === `${author._id}` && (
 				<div className={styles.editButtons}>
 					<Link to={`/posts/${id}/edit`}>
 						<IconButton color="primary">
@@ -64,11 +60,28 @@ export const Post = ({
 				</div>
 			)}
 			{imageUrl && (
-				<img
-					className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
-					src={`http://localhost:4444${imageUrl}`}
-					alt={title}
-				/>
+				<div
+				// style={{
+				// 	objectFit: 'cover',
+				// 	position: 'relative',
+				// 	width: '100%',
+				// 	maxWidth: '100%',
+				// 	paddingBottom: '56.4103%',
+				// }}
+				>
+					<img
+						// style={{
+						// 	objectPosition: '0% 0%',
+						// 	height: '100%',
+						// 	objectFit: 'cover',
+						// 	position: 'absolute',
+						// 	width: '100%',
+						// }}
+						className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
+						src={`http://localhost:4444${imageUrl}`}
+						alt={title}
+					/>
+				</div>
 			)}
 			<div className={styles.wrapper}>
 				<UserInfo {...user} additionalText={createdAt} />

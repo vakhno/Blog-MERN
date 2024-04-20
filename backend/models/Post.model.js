@@ -24,12 +24,18 @@ const PostSchema = new Schema(
 		],
 		image: {
 			type: String,
-			default: '',
+			default: null,
 		},
 		viewsCount: {
 			type: Number,
 			default: 0,
 		},
+		comments: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Comment',
+			},
+		],
 	},
 	{ timestamps: true },
 );

@@ -6,7 +6,7 @@ import authRoutes from './routes/auth.routes.js';
 import profileRoutes from './routes/profile.routes.js';
 import postRoutes from './routes/post.routes.js';
 import tagRoutes from './routes/tag.routes.js';
-
+import commentRoutes from './routes/comment.routes.js';
 const app = express();
 
 const PORT = process.env.PORT || 4444;
@@ -22,6 +22,7 @@ app.use('/profile', profileRoutes);
 app.use('/post', postRoutes);
 app.use('/tag', tagRoutes);
 app.use('/uploads', express.static('uploads'));
+app.use('/comment', commentRoutes);
 
 app.listen(PORT, (error) => {
 	if (error) {

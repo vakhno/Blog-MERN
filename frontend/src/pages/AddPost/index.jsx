@@ -8,18 +8,20 @@ import Stack from '@mui/material/Stack';
 import { useForm } from 'react-hook-form';
 import axios from '../../axios/axios';
 import { getAllTags } from '../../redux/slices/tags';
-import { addPost } from '../../redux/slices/posts';
+import { addPost, editPost, fetchPost, removePost } from '../../redux/slices/posts';
 import { useSelector, useDispatch } from 'react-redux';
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export const AddPost = () => {
-	const { id } = useParams();
+	const { id: editableId } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { _id: userId } = useSelector((state) => state.auth.data);
 	const { data: allTags } = useSelector((state) => state.tags.allTags);
+	const { data: selectedPost } = useSelector((state) => state.posts.currentPost);
+	console.log('!!!!!!!!', selectedPost);
 	// const reader = new FileReader();
 	const [tags, setTags] = useState([]);
 	const [title, setTitle] = useState('');
@@ -39,15 +41,34 @@ export const AddPost = () => {
 	useEffect(() => {
 		(async () => {
 			await dispatch(getAllTags());
+			if (editableId) {
+				await dispatch(fetchPost({ id: editableId }));
+			}
 		})();
-		if (id) {
-			axios.get(`/post/post/${id}`).then(({ data }) => {
-				setTitle(data.title);
-				setText(data.text);
-				setTags(data.tags);
-			});
-		}
+		return () => dispatch(removePost());
 	}, []);
+
+	useEffect(() => {
+		(async () => {
+			setTitle(selectedPost.title);
+			setText(selectedPost.text);
+			setTags(selectedPost.tags);
+			const response = await fetch(`http://localhost:4444${selectedPost.image}`);
+			const blob = await response.blob();
+			setSelectedFile(blob);
+		})();
+	}, [selectedPost]);
+
+	useEffect(() => {
+		(async () => {
+			setTitle(selectedPost.title);
+			setText(selectedPost.text);
+			setTags(selectedPost.tags);
+			const response = await fetch(`http://localhost:4444${selectedPost.image}`);
+			const blob = await response.blob();
+			setSelectedFile(blob);
+		})();
+	}, [selectedPost]);
 
 	useEffect(() => {
 		if (inputFileRef.current) {
@@ -105,14 +126,19 @@ export const AddPost = () => {
 		const fields = {
 			title: title,
 			text: text,
-			author: userId,
 			tags: tags,
 		};
-
-		try {
-			await dispatch(addPost({ fields, imageFile: formData }));
-			navigate('/');
-		} catch (error) {}
+		if (editableId) {
+			try {
+				await dispatch(editPost({ id: editableId, fields, imageFile: formData }));
+				navigate(`/posts/${editableId}`);
+			} catch (error) {}
+		} else {
+			try {
+				await dispatch(addPost({ fields, imageFile: formData }));
+				navigate('/');
+			} catch (error) {}
+		}
 	};
 
 	const handleCancel = () => {
@@ -177,7 +203,7 @@ export const AddPost = () => {
 				/>
 				<div className={styles.buttons}>
 					<Button type="submit" size="large" variant="contained">
-						Publish
+						{editableId ? 'Edit' : 'Publish'}
 					</Button>
 					{/* <a href="/"> */}
 					<Button size="large" onClick={handleCancel}>

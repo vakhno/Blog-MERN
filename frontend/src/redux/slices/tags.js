@@ -8,7 +8,6 @@ export const getPopularTags = createAsyncThunk('tags/getPopularTags', async () =
 
 export const getAllTags = createAsyncThunk('tags/getAllTags', async () => {
 	const { data } = await axios.get('/tag/tag');
-	console.log('getAllTags', data);
 	return data.tags;
 });
 

@@ -19,10 +19,10 @@ export const Home = () => {
 	// 	dispatch(fetchPosts());
 	// }, []);
 
-	console.log('posts', posts);
 	const handleTabChange = (_, value) => {
 		setSelectedTab(value);
 	};
+
 	return (
 		<>
 			<Tabs
@@ -65,7 +65,7 @@ export const Home = () => {
 				) : null}
 				<Grid xs={4} item>
 					<TagsBlock />
-					<CommentsBlock
+					{/* <CommentsBlock
 						items={[
 							{
 								user: {
@@ -83,7 +83,7 @@ export const Home = () => {
 							},
 						]}
 						isLoading={false}
-					/>
+					/> */}
 				</Grid>
 			</Grid>
 		</>

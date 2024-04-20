@@ -2,7 +2,6 @@ import PostModel from '../models/Post.model.js';
 
 export const createPost = async (req, res) => {
 	try {
-		console.log('req', req.userId);
 		const doc = new PostModel({
 			title: req.body.title,
 			text: req.body.text,
@@ -77,7 +76,6 @@ export const getOnePost = (req, res) => {
 export const updatePost = async (req, res) => {
 	try {
 		const postId = req.params.id;
-		console.log('postId', postId);
 		await PostModel.updateOne(
 			{
 				_id: postId,
@@ -87,6 +85,43 @@ export const updatePost = async (req, res) => {
 				text: req.body.text,
 				tags: req.body?.tags,
 				image: req.body?.image,
+				comments: req.body?.comments,
+			},
+		);
+
+		res.status(200).json({ success: true });
+	} catch (error) {
+		console.log('Failure update');
+		res.status(500).json({ error: error });
+	}
+};
+
+export const addComment = async (req, res) => {
+	try {
+		console.log('------------', req.body);
+		const { id, newComment } = req.body;
+		const post = await PostModel.findById(id);
+		if (!post) {
+			return res.status(404).message({ message: 'Post not found!' });
+		}
+		await post.comments.push(newComment);
+		await post.save();
+		console.log('12312');
+		return res.status(200).json();
+	} catch (error) {
+		res.status(500);
+	}
+};
+
+export const addCommentToPost = async (req, res) => {
+	try {
+		const postId = req.params.id;
+		await PostModel.updateOne(
+			{
+				_id: postId,
+			},
+			{
+				comments: req.body.title,
 			},
 		);
 

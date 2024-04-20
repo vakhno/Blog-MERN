@@ -10,26 +10,27 @@ import List from '@mui/material/List';
 import Skeleton from '@mui/material/Skeleton';
 
 export const CommentsBlock = ({ items, children, isLoading = true }) => {
+	console.log('items', items);
 	return (
 		<SideBlock title="Today`s top comments">
 			<List>
 				{(isLoading ? [...Array(5)] : items).map((obj, index) => (
 					<React.Fragment key={index}>
 						<ListItem alignItems="flex-start">
-							<ListItemAvatar>
+							{/* <ListItemAvatar>
 								{isLoading ? (
 									<Skeleton variant="circular" width={40} height={40} />
 								) : (
-									<Avatar alt={obj.user.fullName} src={obj.user.avatarUrl} />
+									<Avatar alt={obj.author.fullName} src={obj.author?.avatarUrl} />
 								)}
-							</ListItemAvatar>
+							</ListItemAvatar> */}
 							{isLoading ? (
 								<div style={{ display: 'flex', flexDirection: 'column' }}>
 									<Skeleton variant="text" height={25} width={120} />
 									<Skeleton variant="text" height={18} width={230} />
 								</div>
 							) : (
-								<ListItemText primary={obj.user.fullName} secondary={obj.text} />
+								<ListItemText primary={obj.author.fullName} secondary={obj.text} />
 							)}
 						</ListItem>
 						<Divider variant="inset" component="li" />
